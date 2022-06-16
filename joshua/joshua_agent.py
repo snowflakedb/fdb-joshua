@@ -32,6 +32,7 @@ import threading
 import time
 import traceback
 import datetime
+import stat
 
 import subprocess32 as subprocess
 import fdb
@@ -226,6 +227,12 @@ def ensure_state(ensemble_id, where, properties, basepath=None):
     os.symlink(
         os.path.join(basepath, "global_data"), os.path.join(tmpdir, "global_data")
     )
+
+    for fn in ["joshua_test", "joshua_timeout"]:
+        f = os.path.join(tmpdir, fn)
+        if os.path.exists(f):
+            os.chmod(f, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
+                     | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH);
 
     try:
         # Create a temporary directory within the "where" directory.

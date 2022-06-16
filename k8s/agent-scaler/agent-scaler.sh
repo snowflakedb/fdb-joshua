@@ -14,10 +14,8 @@ while true; do
 
     if [ $use_k8s_ttl_controller == false ] ; then
       # cleanup finished jobs (status 1/1)
-      for job in $(kubectl get jobs -n "${namespace}" | grep -E -e 'joshua-agent-[0-9-]*\s*1/1' | awk '{print $1}'); do
-          echo "=== Job $job Completed ==="
-          kubectl delete job "$job" -n "${namespace}"
-      done
+      echo "=== Delete completed jobs ==="
+      kubectl delete jobs --field-selector status.successful=1 -n "${namespace}"
 
       # cleanup failed jobs
       # pod name is always prefixed with the job name
